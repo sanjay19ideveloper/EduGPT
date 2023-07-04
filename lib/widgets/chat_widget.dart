@@ -36,7 +36,7 @@ class ChatWidget extends StatelessWidget {
                       : AssetsManager.botImage,
                   height: 30,
                   width: 30,
-                 
+                  
                 ),
                 const SizedBox(
                   width: 8,

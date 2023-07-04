@@ -1,14 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:gpt/provider/chat_provider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({Key? key}) : super(key: key);
@@ -55,6 +51,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     super.initState();
     setLen();
   }
+
   void removeItem(int index) async {
     final file = files[index];
     await file.delete();
@@ -63,17 +60,17 @@ class _HistoryScreenState extends State<HistoryScreen> {
       len--;
     });
   }
+
   void archiveItem(int index) async {
     final file = files[index];
-    
-    
+
     final directory = await getApplicationDocumentsDirectory();
     final archivedDirectory = Directory('${directory.path}/Archived');
-    
+
     if (!archivedDirectory.existsSync()) {
       archivedDirectory.createSync();
     }
-    
+
     final newPath = '${archivedDirectory.path}/${file.path.split('/').last}';
     await file.rename(newPath);
 
@@ -82,7 +79,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
       len--;
     });
   }
-void shareItem(String filePath) {
+
+  void shareItem(String filePath) {
     final file = File(filePath);
     if (file.existsSync()) {
       Share.shareFiles([filePath], text: 'Sharing file');
@@ -91,7 +89,6 @@ void shareItem(String filePath) {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
         appBar: AppBar(
             backgroundColor: Colors.cyan,
@@ -106,13 +103,13 @@ void shareItem(String filePath) {
                     future: getHistory(files[i].path),
                     builder: (context, builder) {
                       if (builder.connectionState == ConnectionState.waiting)
-                        return SizedBox();
+                        return const SizedBox();
                       if (builder.hasData) {
                         return Slidable(
-                          actionPane: SlidableDrawerActionPane(),
+                          actionPane: const SlidableDrawerActionPane(),
                           actionExtentRatio: 0.25,
                           child: Container(
-                              //  color: Colors.grey[200],
+                             
                               decoration: BoxDecoration(
                                 color: Colors.grey[200],
                                 borderRadius: BorderRadius.circular(8.0),
@@ -129,57 +126,60 @@ void shareItem(String filePath) {
                               margin: const EdgeInsets.symmetric(
                                   vertical: 8.0, horizontal: 8.0),
                               child: Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(
-                                      mainAxisAlignment:MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(builder
                                             .data!.getChatList.first.msg),
-                                            InkWell(
-                                              onTap: () {
-                          Navigator.pop(context, files[i].path);
-                        },
-                                              child: Icon(Icons.arrow_forward_ios_outlined,size:20))
+                                        InkWell(
+                                            onTap: () {
+                                              Navigator.pop(
+                                                  context, files[i].path);
+                                            },
+                                            child: const Icon(
+                                                Icons
+                                                    .arrow_forward_ios_outlined,
+                                                size: 20))
                                       ],
                                     ),
                                     Text(builder.data!.getChatList[1].msg,
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis),
                                   ])),
-                                  actions: <Widget>[
-    // IconSlideAction(
-    //   caption: 'Archive',
-    //   color: Colors.blue,
-    //   icon: Icons.archive,
-    //  onTap: () => archiveItem
-    // ),
-    IconSlideAction(
-      caption: 'Share',
-      color: Colors.indigo,
-      icon: Icons.share,
-      onTap: () => shareItem(files[i].path),
-    ),
-  ],
-  secondaryActions: <Widget>[
-    // IconSlideAction(
-    //   caption: 'More',
-    //   color: Colors.black45,
-    //   icon: Icons.more_horiz,
-    //   // onTap: () => _showSnackBar('More'),
-    // ),
-    IconSlideAction(
-      caption: 'Delete',
-      color: Colors.red,
-      icon: Icons.delete,
-       onTap: () => removeItem(i),
-    ),
-  ],
-
+                          actions: <Widget>[
+                            // IconSlideAction(
+                            //   caption: 'Archive',
+                            //   color: Colors.blue,
+                            //   icon: Icons.archive,
+                            //  onTap: () => archiveItem
+                            // ),
+                            IconSlideAction(
+                              caption: 'Share',
+                              color: Colors.indigo,
+                              icon: Icons.share,
+                              onTap: () => shareItem(files[i].path),
+                            ),
+                          ],
+                          secondaryActions: <Widget>[
+                            // IconSlideAction(
+                            //   caption: 'More',
+                            //   color: Colors.black45,
+                            //   icon: Icons.more_horiz,
+                            //   // onTap: () => _showSnackBar('More'),
+                            // ),
+                            IconSlideAction(
+                              caption: 'Delete',
+                              color: Colors.red,
+                              icon: Icons.delete,
+                              onTap: () => removeItem(i),
+                            ),
+                          ],
                         );
                       }
-                      return SizedBox();
+                      return const SizedBox();
                     });
               }
             },
