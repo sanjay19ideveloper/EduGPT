@@ -6,6 +6,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:gpt/constant/constant.dart';
 import 'package:gpt/provider/chat_provider.dart';
 import 'package:gpt/provider/model_provider.dart';
+import 'package:gpt/screens/history.dart';
 import 'package:gpt/service/assests_manager.dart';
 import 'package:gpt/service/service.dart';
 import 'package:gpt/widgets/chat_widget.dart';
@@ -14,6 +15,7 @@ import 'package:provider/provider.dart';
 import '../model/chat_model.dart';
 import '../widgets/text_widget.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:uuid/uuid.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -24,7 +26,7 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   bool _isTyping = false;
-
+  
   late TextEditingController textEditingController;
   late ScrollController _listScrollController = ScrollController();
   _scrollToBottom() {
@@ -44,8 +46,8 @@ class _ChatScreenState extends State<ChatScreen> {
     super.initState();
   }
 
-  void loadPrevChat() async {
-    preChat = await getChatHistory();
+  void loadPrevChat(String filePath) async {
+    preChat = await getChatHistory(filePath);
     setState(() {});
     debugPrint("previous chat ${preChat?.chatList.length}");
   }
@@ -63,39 +65,51 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     final modelsProvider = Provider.of<ModelsProvider>(context);
     ChatProvider chatProvider = Provider.of<ChatProvider>(context);
-      if (chatProvider.chatList.isEmpty && preChat?.chatList.isNotEmpty == true) {
-        chatProvider = preChat!;
-        debugPrint("previous chat $preChat");
-     }
+    if (chatProvider.chatList.isEmpty && preChat?.chatList.isNotEmpty == true) {
+      chatProvider = preChat!;
+      debugPrint("previous chat $preChat");
+    }
     debugPrint("previous chat ${preChat?.chatList.length}");
     return Scaffold(
       appBar: AppBar(
-        backgroundColor:Colors.cyan,
+        backgroundColor: Colors.cyan,
         // backgroundColor: const Color(0xff7062e3),
         elevation: 2,
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Image.asset(AssetsManager.openaiLogo),
+          child: InkWell(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ChatScreen()));
+              },
+              child: Image.asset(AssetsManager.openaiLogo)),
         ),
-        title: const Center(child: Padding(
-          padding: EdgeInsets.only(left:25.0),
+        title: const Center(
+            child: Padding(
+          padding: EdgeInsets.only(left: 25.0),
           child: const Text("EduGPT"),
         )),
         actions: [
           Row(
             children: [
               IconButton(
-                onPressed: () async {
-                 saveChatHistory(chatProvider.toJsonString());
-                },
-                icon:Image.asset(AssetsManager.saveIcon,height:20)
-              ),
+                  onPressed: () async {
+                     saveChatHistory(chatProvider.toJsonString());
+                    // saveChatHistory([chatProvider.toJsonString()]);
+                  },
+                  icon: Image.asset(AssetsManager.saveIcon, height: 20)),
               IconButton(
-                onPressed: () async {
-                  loadPrevChat();
-                },
-               icon:Image.asset(AssetsManager.historyIcon,height:20)
-              ),
+                  onPressed: () async {
+                    // loadPrevChat();
+                    Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const HistoryScreen()))
+                        .then((value) => loadPrevChat(value));
+                  },
+                  icon: Image.asset(AssetsManager.historyIcon, height: 20)),
             ],
           ),
         ],
@@ -135,7 +149,6 @@ class _ChatScreenState extends State<ChatScreen> {
                           .chatIndex, //chatList[index].chatIndex,
                       shouldAnimate:
                           chatProvider.getChatList.length - 1 == index,
-
                     );
                   }),
             ),
@@ -205,24 +218,67 @@ class _ChatScreenState extends State<ChatScreen> {
     // Parse the modified JSON string into a JSON object
     debugPrint('chat history is $chatHistory');
 
-    final directory = await getApplicationDocumentsDirectory();
 
-    final file = File('${directory.path}/chat_history.txt');
+    final directory = await getApplicationDocumentsDirectory();
+     String uuid = const Uuid().v1();
+
+    final file = File('${directory.path}/$uuid.txt');
 
     await file.writeAsString(chatHistory);
   }
+  // Future<void> saveChatHistory(List<String> chatHistories) async {
+  //   final directory = await getApplicationDocumentsDirectory();
+  //   // print('hello ${.first.path}');
+  
 
-  Future<ChatProvider> getChatHistory() async {
+  //   for (int i = 0; i < chatHistories.length; i++) {
+  //     final chatHistory = chatHistories[i];
+  //     final file = File('${directory.path}/chat_history_$i.txt');
+
+  //     try {
+  //       await file.writeAsString(chatHistory);
+  //       print('Saved chat history to ${file.path}');
+  //     } catch (e) {
+  //       print('Error saving chat history: $e');
+  //     }
+  //   }
+  // }
+
+// Future<ChatProvider> getChatHistory() async {
+//     try {
+//       final directory = await getApplicationDocumentsDirectory();
+//       final file = File('${directory.path}/chat_history.txt');
+//        directory.list();
+//        debugPrint('ddd$directory.list()');
+
+//       // Read the file contents as a string
+//       final contents = await file.readAsString();
+//       print('content is $contents');
+//       Map<String, dynamic> json;
+//       json = jsonDecode(contents);
+//       // return ChatProvider();
+//       return ChatProvider.fromJson(json);
+//     } catch (e) {
+//       print('Failed to read file: $e');
+//       return ChatProvider();
+//     }
+//   }
+
+  Future<ChatProvider> getChatHistory(String filePath) async {
     try {
       final directory = await getApplicationDocumentsDirectory();
-      final file = File('${directory.path}/chat_history.txt');
+      final file = File(filePath);
+
+      
+     
 
       // Read the file contents as a string
       final contents = await file.readAsString();
-      print('content is $contents');
-      Map<String, dynamic> json;
-      json = jsonDecode(contents);
-      // return ChatProvider();
+
+      // Decode the JSON contents
+      final json = jsonDecode(contents);
+
+      // Return the ChatProvider instance
       return ChatProvider.fromJson(json);
     } catch (e) {
       print('Failed to read file: $e');

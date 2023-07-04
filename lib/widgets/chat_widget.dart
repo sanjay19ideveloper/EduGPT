@@ -45,21 +45,13 @@ class ChatWidget extends StatelessWidget {
                   child: isGptResponse
                       ? TextWidget(
                           label: msg,
-                        ): InkWell(
-                           onTap: () {
-          Scaffold.of(context).showSnackBar(SnackBar(
-            content: Text(msg.trim()),
-          ));
-          Clipboard.setData(new ClipboardData(text: msg.trim()));
-                           },
-                          child: Text(
-                                msg.trim(),
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 16),
-                              ),
-                        )
+                        ): Text(
+                              msg.trim(),
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 16),
+                            )
                       // : false
                       //     ? DefaultTextStyle(
                       //         style: const TextStyle(
