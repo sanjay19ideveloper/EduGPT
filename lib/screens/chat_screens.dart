@@ -127,12 +127,15 @@ class _ChatScreenState extends State<ChatScreen> {
                   itemCount: chatProvider.getChatList.length, //chatList.length,
                   itemBuilder: (context, index) {
                     return ChatWidget(
+                      isGptResponse: false,
+                      isFromChatHistory: true,
                       msg: chatProvider
                           .getChatList[index].msg, // chatList[index].msg,
                       chatIndex: chatProvider.getChatList[index]
                           .chatIndex, //chatList[index].chatIndex,
                       shouldAnimate:
                           chatProvider.getChatList.length - 1 == index,
+
                     );
                   }),
             ),

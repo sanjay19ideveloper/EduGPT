@@ -12,11 +12,13 @@ class ChatWidget extends StatelessWidget {
       {super.key,
       required this.msg,
       required this.chatIndex,
-      this.shouldAnimate = false});
+      this.shouldAnimate = false, required this.isGptResponse, required this.isFromChatHistory,});
 
   final String msg;
   final int chatIndex;
   final bool shouldAnimate;
+  final bool isGptResponse;
+  final bool isFromChatHistory;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -40,7 +42,7 @@ class ChatWidget extends StatelessWidget {
                   width: 8,
                 ),
                 Expanded(
-                  child: chatIndex == 0
+                  child: isGptResponse
                       ? TextWidget(
                           label: msg,
                         ): InkWell(
@@ -102,7 +104,8 @@ class ChatWidget extends StatelessWidget {
                 //           )
                 //         ],
                 //       ),
-                 chatIndex == 0
+                 chatIndex == 0 
+                // if (isGptResponse && !isFromChatHistory)
                     ? const SizedBox.shrink()
                     : Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -116,13 +119,17 @@ class ChatWidget extends StatelessWidget {
           Clipboard.setData(new ClipboardData(text: msg.trim()));
                            },
 
-                            child: Icon(
+                            child:isGptResponse && !isFromChatHistory
+                           ? Icon(
                               Icons.copy_all_outlined,
                               color: Colors.white,
-                            ),
+                            )
+                            :Icon(
+                              Icons.copy_all_outlined,
+                              color: Colors.white,
                           ),
                         
-                        ],
+                     ) ],
                       ),
               ],
             ),
