@@ -133,7 +133,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                           MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(builder
-                                            .data!.getChatList.first.msg),
+                                            .data!.getChatList.first.msg,style:TextStyle(fontSize:15,fontWeight:FontWeight.w700)),
                                         InkWell(
                                             onTap: () {
                                               Navigator.pop(
@@ -145,6 +145,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                                 size: 20))
                                       ],
                                     ),
+                                    SizedBox(height:10),
                                     Text(builder.data!.getChatList[1].msg,
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis),

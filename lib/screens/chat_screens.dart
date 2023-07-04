@@ -84,7 +84,8 @@ class _ChatScreenState extends State<ChatScreen> {
                     MaterialPageRoute(
                         builder: (context) => const ChatScreen()));
               },
-              child: Image.asset(AssetsManager.openaiLogo)),
+              child: Icon(Icons.add,size:30,color:Colors.black)),
+              // Image.asset(AssetsManager.openaiLogo)),
         ),
         title: const Center(
             child: Padding(
