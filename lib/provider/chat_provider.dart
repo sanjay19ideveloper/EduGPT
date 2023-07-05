@@ -9,6 +9,10 @@ class ChatProvider with ChangeNotifier {
   List<ChatModel> get getChatList {
     return chatList;
   }
+   void clearChatHistory() {
+    chatList.clear();
+    notifyListeners();
+  }
 
   void addUserMessage({required String msg}) {
     chatList.add(ChatModel(msg: msg, chatIndex: 0));

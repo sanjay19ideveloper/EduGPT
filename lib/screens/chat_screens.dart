@@ -37,6 +37,7 @@ class _ChatScreenState extends State<ChatScreen> {
   ChatProvider? preChat;
 
   late FocusNode focusNode;
+  int chatCount = 1;
   @override
   void initState() {
     _listScrollController = ScrollController();
@@ -59,6 +60,10 @@ class _ChatScreenState extends State<ChatScreen> {
     focusNode.dispose();
     super.dispose();
   }
+  
+void clearChatHistory() {
+  preChat?.chatList.clear();
+}
 
   // List<ChatModel> chatList = [];
   @override
@@ -76,16 +81,41 @@ class _ChatScreenState extends State<ChatScreen> {
         // backgroundColor: const Color(0xff7062e3),
         elevation: 2,
         leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: InkWell(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ChatScreen()));
-              },
-              child: Icon(Icons.add,size:30,color:Colors.black)),
-              // Image.asset(AssetsManager.openaiLogo)),
+          padding: const EdgeInsets.all(12.0),
+          child: Container(
+           
+
+  decoration: BoxDecoration(
+    border: Border.all(
+      color: Colors.black, // Specify the border color
+      width: 1, // Specify the border width
+    ),
+    borderRadius: BorderRadius.circular(10), // Specify the border radius
+  ),
+  
+            child: InkWell(
+                onTap: () {
+                  setState(() {
+      
+      chatCount++;
+
+      
+      textEditingController.clear();
+
+     
+      chatProvider.clearChatHistory();
+
+      
+      _scrollToBottom();
+    });
+  
+                  // Navigator.push(
+                  //     context,
+                  //     MaterialPageRoute(
+                  //         builder: (context) => const ChatScreen()));
+                },
+                child: Icon(Icons.add,size:30,color:Colors.black)),
+          ),
         ),
         title: const Center(
             child: Padding(
