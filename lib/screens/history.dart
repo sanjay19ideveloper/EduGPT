@@ -108,6 +108,34 @@ class _HistoryScreenState extends State<HistoryScreen> {
                         return Slidable(
                           actionPane: const SlidableDrawerActionPane(),
                           actionExtentRatio: 0.25,
+                          actions: <Widget>[
+                            // IconSlideAction(
+                            //   caption: 'Archive',
+                            //   color: Colors.blue,
+                            //   icon: Icons.archive,
+                            //  onTap: () => archiveItem
+                            // ),
+                            IconSlideAction(
+                              caption: 'Share',
+                              color: Colors.indigo,
+                              icon: Icons.share,
+                              onTap: () => shareItem(files[i].path),
+                            ),
+                          ],
+                          secondaryActions: <Widget>[
+                            // IconSlideAction(
+                            //   caption: 'More',
+                            //   color: Colors.black45,
+                            //   icon: Icons.more_horiz,
+                            //   // onTap: () => _showSnackBar('More'),
+                            // ),
+                            IconSlideAction(
+                              caption: 'Delete',
+                              color: Colors.red,
+                              icon: Icons.delete,
+                              onTap: () => removeItem(i),
+                            ),
+                          ],
                           child: Container(
                              
                               decoration: BoxDecoration(
@@ -146,38 +174,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                       ],
                                     ),
                                     SizedBox(height:10),
-                                    Text(builder.data!.getChatList[1].msg,
+                                   if(builder.data!.getChatList.length >= 2) Text('${builder.data?.getChatList[1].msg}',
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis),
                                   ])),
-                          actions: <Widget>[
-                            // IconSlideAction(
-                            //   caption: 'Archive',
-                            //   color: Colors.blue,
-                            //   icon: Icons.archive,
-                            //  onTap: () => archiveItem
-                            // ),
-                            IconSlideAction(
-                              caption: 'Share',
-                              color: Colors.indigo,
-                              icon: Icons.share,
-                              onTap: () => shareItem(files[i].path),
-                            ),
-                          ],
-                          secondaryActions: <Widget>[
-                            // IconSlideAction(
-                            //   caption: 'More',
-                            //   color: Colors.black45,
-                            //   icon: Icons.more_horiz,
-                            //   // onTap: () => _showSnackBar('More'),
-                            // ),
-                            IconSlideAction(
-                              caption: 'Delete',
-                              color: Colors.red,
-                              icon: Icons.delete,
-                              onTap: () => removeItem(i),
-                            ),
-                          ],
                         );
                       }
                       return const SizedBox();
