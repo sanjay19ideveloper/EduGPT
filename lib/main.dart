@@ -4,6 +4,7 @@ import 'package:gpt/constant/constant.dart';
 import 'package:gpt/provider/chat_provider.dart';
 import 'package:gpt/provider/model_provider.dart';
 import 'package:gpt/screens/chat_screens.dart';
+import 'package:gpt/screens/splash.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
             appBarTheme: AppBarTheme(
               color: cardColor,
             )),
-        home: const ChatScreen(),
+        home: const SpalshScreen(),
       ),
     );
   }
